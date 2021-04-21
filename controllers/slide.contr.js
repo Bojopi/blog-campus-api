@@ -162,36 +162,40 @@ let editarSlide = (req, res) => {
                     
                     //validamos la extension del archivo
                     if(archivo.mimetype != 'image/jpeg' && archivo.mimetype != 'image.png'){
-                        res.json({
-                            status: 400,
+
+                        let respuesta = {
+                            res: res,
                             mensaje: "La imagen debe ser formato JPEG o PNG"
-                        })
+                        }
+                        reject(respuesta)
                     }
                     
                     //validamos el tamaño del archivo
                     
                     if(archivo.size > 2000000){
-                        res.json({
-                            status: 400,
+
+                        let respuesta = {
+                            res: res,
                             mensaje: "La imagen debe ser menor a 2MB"
-                        })
+                        }
+                        reject(respuesta)
                     }
-
+                    
                     //cambiar nombre al archivo
-
+                    
                     let nombre = Math.floor(Math.random()*10000)
-
-                        //capturar la extension del archivo
+                    
+                    //capturar la extension del archivo
                     let extension = archivo.name.split('.').pop()
-
+                    
                     //movemos el archivo a la carpeta
                     archivo.mv(`./images/slides/${nombre}.${extension}`, err => {
                         if (err) {
-                            return res.json({
-                                status: 500,
-                                mensaje: "Error al guardar la imagen",
-                                err
-                            })
+                            let respuesta = {
+                                res: res,
+                                mensaje: "Error al guardar la imagen"
+                            }
+                            reject(respuesta)
                         }
                         rutaImagen = `${nombre}.${extension}`
                     })
@@ -215,17 +219,14 @@ let editarSlide = (req, res) => {
                 //Acualizamos en mongodb
                 Slide.findByIdAndUpdate(id, datosSlide, {new: true, runValidators: true}, (err, data) => {
                     if (err) {
-                        return res.json({
-                            status: 400,
-                            mensaje: "Error al editar el slide",
-                            err
-                        })
+
+                        let respuesta = {
+                            res: res,
+                            error: err
+                        }
+
+                        reject(respuesta)
                     }
-                    // res.json({
-                    //     status: 200,
-                    //     data,
-                    //     mensaje: "El slide ha sido actualizado con éxito"
-                    // })
                     let respuesta = {
                         res: res,
                         data: data
@@ -240,8 +241,21 @@ let editarSlide = (req, res) => {
             cambiarRegistrosBD(id, body, rutaImagen).then(respuesta => {
                 respuesta["res"].json({
                     status: 200,
-                    data: respuesta{"data"}
+                    data: respuesta["data"],
+                    mensaje: "El slide ha sido actualizado con éxito"
                 })
+            }).catch(respuesta => {
+                respuesta["res"].json({
+                    status: 400,
+                    err: respuesta["err"],
+                    mensaje: "Error al actualizar el slide"
+                })
+                
+            })
+        }).catch(respuesta => {
+            respuesta["res"].json({
+                status: 400,
+                mensaje: respuesta["mensaje"]
             })
         })
 
