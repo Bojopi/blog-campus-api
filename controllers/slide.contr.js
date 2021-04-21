@@ -1,4 +1,5 @@
-//import { Slide } from "../models/slide.mod";
+//administrador de carpetas y archivos en nodejs
+const fs = require('fs')
 const Slide = require('../models/slide.mod');
 
 //PETICIONES GET
@@ -161,7 +162,7 @@ let editarSlide = (req, res) => {
                     let archivo = req.files.archivo
                     
                     //validamos la extension del archivo
-                    if(archivo.mimetype != 'image/jpeg' && archivo.mimetype != 'image.png'){
+                    if(archivo.mimetype != 'image/jpeg' && archivo.mimetype != 'image/png'){
 
                         let respuesta = {
                             res: res,
@@ -197,11 +198,18 @@ let editarSlide = (req, res) => {
                             }
                             reject(respuesta)
                         }
+
+                        //borramos la antigua imagen
+                        if(fs.existsSync(`./images/slides/${rutaImagen}`)){
+                            fs.unlinkSync(`./images/slides/${rutaImagen}`)
+                        }
+
+                        //damos valor a la nueva imagen
                         rutaImagen = `${nombre}.${extension}`
+                        
+                        resolve(rutaImagen)
                     })
 
-                } else {
-                    resolve(rutaImagen)
                 }
             })
         }
@@ -263,9 +271,70 @@ let editarSlide = (req, res) => {
 }
 
 
+
+/*=============================================
+=            PETICION DELETE            =
+=============================================*/
+
+let eliminarSlide = (req, res) => {
+    //capturamos el id del slide que queremos eliminar
+
+    let id = req.params.id
+
+    //VALIDAMOS QUE EL SLIDE EXISTA
+
+    Slide.findById(id, (err, data) => {
+        //validamos que no ocurra error en el proceso
+        if (err) {
+            return res.json({
+                status: 500,
+                mensaje: "Error en el servidor",
+                err
+            })
+        }
+        //validamos que el slide exista
+        if (!data) {
+            return res.json({
+                status: 400,
+                mensaje: "El slide no existe en la base de datos",
+                err
+            })
+            
+        }
+
+        //borramos la antigua imagen
+        if(fs.existsSync(`./images/slides/${data.imagen}`)){
+            fs.unlinkSync(`./images/slides/${data.imagen}`)
+        }
+
+        //borramos el registro en MongoDB
+        Slide.findByIdAndDelete(id, (err, data) => {
+            if(err) {
+                return res.json({
+                    status: 500,
+                    mensaje: "Error al borrar el registro",
+                    err
+                })
+            }
+
+            res.json({
+                status: 200,
+                mensaje: "El slide ha sido borrado correctamente"
+            })
+
+        })
+
+    })
+}
+
+
+
+
+
 //exportar las funciones del controlador
 module.exports = {
     mostrarSlide,
     crearSlide,
-    editarSlide
+    editarSlide,
+    eliminarSlide
 } 

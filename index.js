@@ -21,6 +21,17 @@ app.use(bodyParser.json({limit: '10mb', extended: true }))
 app.use(fileUpload())
 
 
+
+/*=============================================
+=      DESAPROBACIONES DE MONGOOSE            =
+=============================================*/
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
+
+
 //IMPORTAR LAS RUTAS
 
 app.use(require('./routes/slide.rout'))
