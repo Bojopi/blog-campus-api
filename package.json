@@ -1,21 +1,21 @@
 {
-  "name": "apirestmongo",
+  "name": "apirestmongoblog",
   "version": "1.0.0",
-  "description": "mi prueba de apirest con mongodb",
+  "description": "mi apirest del blog con mongodb",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Bojopi/apirestmongo.git"
+    "url": "git+https://github.com/Bojopi/blog-campus-api.git"
   },
-  "author": "",
+  "author": "Bryana Ojopi",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Bojopi/apirestmongo/issues"
+    "url": "https://github.com/Bojopi/blog-campus-api/issues"
   },
-  "homepage": "https://github.com/Bojopi/apirestmongo#readme",
+  "homepage": "https://github.com/Bojopi/blog-campus-api#readme",
   "dependencies": {
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",

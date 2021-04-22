@@ -2,7 +2,10 @@
 const fs = require('fs')
 const Slide = require('../models/slide.mod');
 
-//PETICIONES GET
+
+/*=============================================
+=            PETICIONES GET            =
+=============================================*/
 let mostrarSlide = (req, res) => {
     Slide.find({}).exec((err, data) => {
         if (err) return res.json({
@@ -32,7 +35,11 @@ let mostrarSlide = (req, res) => {
 }
 
 
-//PETICIONES POST
+
+/*=============================================
+=            PETICIONES POST            =
+=============================================*/
+
 let crearSlide = (req, res) => {
 
     //obtenemos el cuerpo del formulario
@@ -115,7 +122,9 @@ let crearSlide = (req, res) => {
 }
 
 
-//PETICIONES PUT
+/*=============================================
+=            PETICIONES PUT            =
+=============================================*/
 
 let editarSlide = (req, res) => {
     
