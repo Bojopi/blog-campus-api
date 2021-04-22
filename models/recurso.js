@@ -5,32 +5,32 @@ const mongoose = require('mongoose');
 
 let Schema = mongoose.Schema
 
-let articuloSchema = new Schema({
+let recursoSchema = new Schema({
     titulo: {
         type: String,
         required: [true, "El título es obligatorio"]
     },
-    introduccion: {
+    descripcion: {
         type: String,
-        required: [true, "La introduccion es obligatoria"]
+        required: [true, "La descripción es obligatoria"]
     },
-    contenido: {
+    logo: {
         type: String,
-        required: [true, "El contenido es obligatorio"]
+        required: [true, "El logo es obligatorio"]
     },
-    fecha: {
+    video: {
         type: String,
-        required: [true, "La fecha es obligatoria"]
+        required: [true, "El video es obligatorio"]
     },
-    img: {
+    enlace: {
         type: String,
-        required: [true, "La imagen es obligatoria"]
+        required: [true, "El enlace es obligatorio"]
     },
-    id_personal: {
+    id_categoria: {
         type: Schema.ObjectId,
-        ref: "personal"
+        ref: "categoria"
     }
 })
 
 //exportando el modelo
-module.exports = mongoose.model("articulos", articuloSchema)
+module.exports = mongoose.model("recursos", recursoSchema)

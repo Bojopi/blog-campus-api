@@ -34,13 +34,14 @@ mongoose.set('useUnifiedTopology', true);
 
 //IMPORTAR LAS RUTAS
 
-app.use(require('./routes/slide.rout'))
-app.use(require('./routes/galeria.rout'))
-app.use(require('./routes/articulo.rout'))
+app.use(require('./routes/personal.rout'))
+// app.use(require('./routes/galeria.rout'))
+// app.use(require('./routes/articulo.rout'))
 
 //CONEXION A LA BASE DE DATOS
 //mongoose.connect('mongodb://localhost:27017/apirest', {
-mongoose.connect('mongodb+srv://admin:12345678Admin@cluster0.yhpme.mongodb.net/apirest?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://admin:12345678Admin@apirestmongoblog.acoc2.mongodb.net/apirest?retryWrites=true&w=majority', {
+//mongoose.connect('mongodb+srv://admin:12345678Admin@cluster0.yhpme.mongodb.net/apirest?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err, res) => {
