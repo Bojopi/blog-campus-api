@@ -25,4 +25,4 @@ let personalSchema = new Schema({
 })
 
 //exportando el modelo
-module.exports = mongoose.model("personals", personalSchema) 
+module.exports = mongoose.model("personals", personalSchema)

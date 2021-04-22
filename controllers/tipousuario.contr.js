@@ -1,13 +1,13 @@
 //administrador de carpetas y archivos en nodejs
 const fs = require('fs')
-const Personal = require('../models/personal');
+const TipoUsuario = require('../models/tipousuario');
 
 
 /*=============================================
 =            PETICIONES GET            =
 =============================================*/
-let mostrarPersonal = (req, res) => {
-    Personal.find({}).exec((err, data) => {
+let mostrarTipoUsuario = (req, res) => {
+    TipoUsuario.find({}).exec((err, data) => {
         if (err) return res.json({
             status: 500,
             mensaje: "Error en la peticion"
@@ -15,7 +15,7 @@ let mostrarPersonal = (req, res) => {
 
         
         //contar la cantidad de registros
-        Personal.countDocuments({}, (err, total) => {
+        TipoUsuario.countDocuments({}, (err, total) => {
 
             if(err){
                 return res.json({
@@ -40,7 +40,7 @@ let mostrarPersonal = (req, res) => {
 =            PETICIONES POST            =
 =============================================*/
 
-let crearPersonal = (req, res) => {
+let crearTipoUsuario = (req, res) => {
 
     //obtenemos el cuerpo del formulario
 
@@ -48,20 +48,17 @@ let crearPersonal = (req, res) => {
 
     //obtenemos los datos del formulario para pasarlo al modelo
     
-    let personal = new Personal({
-        nombre: body.nombre,
-        apellido: body.apellido,
-        correo: body.correo,
-        telefono: body.telefono
+    let tipousuario = new TipoUsuario({
+        nombre: body.nombre
     })
 
     //guardamos en mongodb
     
-    personal.save((err, data) => {
+    tipousuario.save((err, data) => {
         if (err) {
             return res.json({
                 status: 400,
-                mensaje: "Error al almacenar el Personal",
+                mensaje: "Error al almacenar el tipo de usuario",
                 err
             })
         }
@@ -69,7 +66,7 @@ let crearPersonal = (req, res) => {
         res.json({
             status: 200,
             data,
-            mensaje: "El Personal ha sido creado con exito"
+            mensaje: "El tipo de usuario ha sido creado con exito"
         })
     })
 }
@@ -79,9 +76,9 @@ let crearPersonal = (req, res) => {
 =            PETICIONES PUT            =
 =============================================*/
 
-let editarPersonal = (req, res) => {
+let editarTipoUsuario = (req, res) => {
     
-    //capturamos el id del personal que queremos actualizar
+    //capturamos el id del tipo de usuario que queremos actualizar
 
     let id = req.params.id
 
@@ -89,9 +86,9 @@ let editarPersonal = (req, res) => {
 
     let body = req.body
 
-    //VALIDAMOS QUE EL PERSONAL EXISTA
+    //VALIDAMOS QUE EL TIPO DE USUARIO EXISTA
 
-    Personal.findById(id, (err, data) => {
+    TipoUsuario.findById(id, (err, data) => {
         //validamos que no ocurra error en el proceso
         if (err) {
             return res.json({
@@ -104,7 +101,7 @@ let editarPersonal = (req, res) => {
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El personal no existe en la base de datos",
+                mensaje: "El tipo de usuario no existe en la base de datos",
                 err
             })
             
@@ -114,15 +111,12 @@ let editarPersonal = (req, res) => {
 
         let cambiarRegistrosBD = (id, body) => {
             return new Promise((resolve, reject) => {
-                let datosPersonal = {
-                    nombre: body.nombre,
-                    apellido: body.apellido,
-                    correo: body.correo,
-                    telefono: body.telefono
+                let datosTipoUsuario = {
+                    nombre: body.nombre
                 }
         
                 //Acualizamos en mongodb
-                Personal.findByIdAndUpdate(id, datosPersonal, {new: true, runValidators: true}, (err, data) => {
+                TipoUsuario.findByIdAndUpdate(id, datosTipoUsuario, {new: true, runValidators: true}, (err, data) => {
                     if (err) {
                         let respuesta = {
                             res: res,
@@ -145,13 +139,13 @@ let editarPersonal = (req, res) => {
             respuesta["res"].json({
                 status: 200,
                 data: respuesta["data"],
-                mensaje: "El personal ha sido actualizado con éxito"
+                mensaje: "El tipo de usuario ha sido actualizado con éxito"
             })
         }).catch(respuesta => {
             respuesta["res"].json({
                 status: 400,
                 err: respuesta["err"],
-                mensaje: "Error al actualizar el personal"
+                mensaje: "Error al actualizar el tipo de usuario"
             })
             
         })
@@ -165,14 +159,14 @@ let editarPersonal = (req, res) => {
 =            PETICION DELETE            =
 =============================================*/
 
-let eliminarPersonal = (req, res) => {
-    //capturamos el id del personal que queremos eliminar
+let eliminarTipoUsuario = (req, res) => {
+    //capturamos el id del tipo de usuario que queremos eliminar
 
     let id = req.params.id
 
-    //VALIDAMOS QUE EL PERSONAL EXISTA
+    //VALIDAMOS QUE EL TIPO DE USUARIO EXISTA
 
-    Personal.findById(id, (err, data) => {
+    TipoUsuario.findById(id, (err, data) => {
         //validamos que no ocurra error en el proceso
         if (err) {
             return res.json({
@@ -181,18 +175,18 @@ let eliminarPersonal = (req, res) => {
                 err
             })
         }
-        //si el personal no existe
+        //si el tipo de usuario no existe
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El personal no existe en la base de datos",
+                mensaje: "El tipo de usuario no existe en la base de datos",
                 err
             })
             
         }
 
         //borramos el registro en MongoDB
-        Personal.findByIdAndDelete(id, (err, data) => {
+        TipoUsuario.findByIdAndDelete(id, (err, data) => {
             if(err) {
                 return res.json({
                     status: 500,
@@ -203,7 +197,7 @@ let eliminarPersonal = (req, res) => {
 
             res.json({
                 status: 200,
-                mensaje: "El personal ha sido borrado correctamente"
+                mensaje: "El tipo de usuario ha sido borrado correctamente"
             })
 
         })
@@ -217,8 +211,8 @@ let eliminarPersonal = (req, res) => {
 
 //exportar las funciones del controlador
 module.exports = {
-    mostrarPersonal,
-    crearPersonal,
-    editarPersonal,
-    eliminarPersonal
+    mostrarTipoUsuario,
+    crearTipoUsuario,
+    editarTipoUsuario,
+    eliminarTipoUsuario
 } 

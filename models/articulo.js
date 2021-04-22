@@ -28,7 +28,7 @@ let articuloSchema = new Schema({
     },
     id_personal: {
         type: Schema.ObjectId,
-        ref: "personal"
+        ref: "personals"
     }
 })
 

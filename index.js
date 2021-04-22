@@ -35,8 +35,10 @@ mongoose.set('useUnifiedTopology', true);
 //IMPORTAR LAS RUTAS
 
 app.use(require('./routes/personal.rout'))
-// app.use(require('./routes/galeria.rout'))
-// app.use(require('./routes/articulo.rout'))
+app.use(require('./routes/categoria.rout'))
+app.use(require('./routes/tipousuario.rout'))
+app.use(require('./routes/usuario.rout'))
+app.use(require('./routes/articulo.rout'))
 
 //CONEXION A LA BASE DE DATOS
 //mongoose.connect('mongodb://localhost:27017/apirest', {

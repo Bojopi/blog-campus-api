@@ -1,13 +1,13 @@
 //administrador de carpetas y archivos en nodejs
 const fs = require('fs')
-const Personal = require('../models/personal');
+const Categoria = require('../models/categoria');
 
 
 /*=============================================
 =            PETICIONES GET            =
 =============================================*/
-let mostrarPersonal = (req, res) => {
-    Personal.find({}).exec((err, data) => {
+let mostrarCategoria = (req, res) => {
+    Categoria.find({}).exec((err, data) => {
         if (err) return res.json({
             status: 500,
             mensaje: "Error en la peticion"
@@ -15,7 +15,7 @@ let mostrarPersonal = (req, res) => {
 
         
         //contar la cantidad de registros
-        Personal.countDocuments({}, (err, total) => {
+        Categoria.countDocuments({}, (err, total) => {
 
             if(err){
                 return res.json({
@@ -40,7 +40,7 @@ let mostrarPersonal = (req, res) => {
 =            PETICIONES POST            =
 =============================================*/
 
-let crearPersonal = (req, res) => {
+let crearCategoria = (req, res) => {
 
     //obtenemos el cuerpo del formulario
 
@@ -48,20 +48,17 @@ let crearPersonal = (req, res) => {
 
     //obtenemos los datos del formulario para pasarlo al modelo
     
-    let personal = new Personal({
-        nombre: body.nombre,
-        apellido: body.apellido,
-        correo: body.correo,
-        telefono: body.telefono
+    let categoria = new Categoria({
+        nombre: body.nombre
     })
 
     //guardamos en mongodb
     
-    personal.save((err, data) => {
+    categoria.save((err, data) => {
         if (err) {
             return res.json({
                 status: 400,
-                mensaje: "Error al almacenar el Personal",
+                mensaje: "Error al almacenar la categoria",
                 err
             })
         }
@@ -69,7 +66,7 @@ let crearPersonal = (req, res) => {
         res.json({
             status: 200,
             data,
-            mensaje: "El Personal ha sido creado con exito"
+            mensaje: "La categoria ha sido creada con exito"
         })
     })
 }
@@ -79,9 +76,9 @@ let crearPersonal = (req, res) => {
 =            PETICIONES PUT            =
 =============================================*/
 
-let editarPersonal = (req, res) => {
+let editarCategoria = (req, res) => {
     
-    //capturamos el id del personal que queremos actualizar
+    //capturamos el id de la categoria que queremos actualizar
 
     let id = req.params.id
 
@@ -89,9 +86,9 @@ let editarPersonal = (req, res) => {
 
     let body = req.body
 
-    //VALIDAMOS QUE EL PERSONAL EXISTA
+    //VALIDAMOS QUE LA CATEGORIA EXISTA
 
-    Personal.findById(id, (err, data) => {
+    Categoria.findById(id, (err, data) => {
         //validamos que no ocurra error en el proceso
         if (err) {
             return res.json({
@@ -100,11 +97,11 @@ let editarPersonal = (req, res) => {
                 err
             })
         }
-        //si el personal no existe
+        //si la categoria no existe
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El personal no existe en la base de datos",
+                mensaje: "La categoria no existe en la base de datos",
                 err
             })
             
@@ -114,15 +111,12 @@ let editarPersonal = (req, res) => {
 
         let cambiarRegistrosBD = (id, body) => {
             return new Promise((resolve, reject) => {
-                let datosPersonal = {
-                    nombre: body.nombre,
-                    apellido: body.apellido,
-                    correo: body.correo,
-                    telefono: body.telefono
+                let datosCategoria = {
+                    nombre: body.nombre
                 }
         
                 //Acualizamos en mongodb
-                Personal.findByIdAndUpdate(id, datosPersonal, {new: true, runValidators: true}, (err, data) => {
+                Categoria.findByIdAndUpdate(id, datosCategoria, {new: true, runValidators: true}, (err, data) => {
                     if (err) {
                         let respuesta = {
                             res: res,
@@ -145,13 +139,13 @@ let editarPersonal = (req, res) => {
             respuesta["res"].json({
                 status: 200,
                 data: respuesta["data"],
-                mensaje: "El personal ha sido actualizado con éxito"
+                mensaje: "La categoria ha sido actualizada con éxito"
             })
         }).catch(respuesta => {
             respuesta["res"].json({
                 status: 400,
                 err: respuesta["err"],
-                mensaje: "Error al actualizar el personal"
+                mensaje: "Error al actualizar la categoria"
             })
             
         })
@@ -165,14 +159,14 @@ let editarPersonal = (req, res) => {
 =            PETICION DELETE            =
 =============================================*/
 
-let eliminarPersonal = (req, res) => {
-    //capturamos el id del personal que queremos eliminar
+let eliminarCategoria = (req, res) => {
+    //capturamos el id de la categoria que queremos eliminar
 
     let id = req.params.id
 
-    //VALIDAMOS QUE EL PERSONAL EXISTA
+    //VALIDAMOS QUE LA CATEGORIA EXISTA
 
-    Personal.findById(id, (err, data) => {
+    Categoria.findById(id, (err, data) => {
         //validamos que no ocurra error en el proceso
         if (err) {
             return res.json({
@@ -181,29 +175,29 @@ let eliminarPersonal = (req, res) => {
                 err
             })
         }
-        //si el personal no existe
+        //si la categoria no existe
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El personal no existe en la base de datos",
+                mensaje: "La categoria no existe en la base de datos",
                 err
             })
             
         }
 
         //borramos el registro en MongoDB
-        Personal.findByIdAndDelete(id, (err, data) => {
+        Categoria.findByIdAndDelete(id, (err, data) => {
             if(err) {
                 return res.json({
                     status: 500,
-                    mensaje: "Error al borrar el personal",
+                    mensaje: "Error al borrar la categoria",
                     err
                 })
             }
 
             res.json({
                 status: 200,
-                mensaje: "El personal ha sido borrado correctamente"
+                mensaje: "La categoria ha sido borrada correctamente"
             })
 
         })
@@ -217,8 +211,8 @@ let eliminarPersonal = (req, res) => {
 
 //exportar las funciones del controlador
 module.exports = {
-    mostrarPersonal,
-    crearPersonal,
-    editarPersonal,
-    eliminarPersonal
+    mostrarCategoria,
+    crearCategoria,
+    editarCategoria,
+    eliminarCategoria
 } 

@@ -16,11 +16,11 @@ let usuarioSchema = new Schema({
     },
     id_tipo: {
         type: Schema.ObjectId,
-        ref: "tipo_usuario"
+        ref: "tipo_usuarios"
     },
     id_personal: {
         type: Schema.ObjectId,
-        ref: "personal"
+        ref: "personals"
     }
 })
 
