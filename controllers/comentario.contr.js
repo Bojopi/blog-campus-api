@@ -1,15 +1,15 @@
 //administrador de carpetas y archivos en nodejs
 const fs = require('fs')
+const Comentario = require('../models/comentario');
 const Articulo = require('../models/articulo');
-const Personal = require('../models/personal');
 
 
 /*=============================================
 =            PETICIONES GET            =
 =============================================*/
-let mostrarArticulo = (req, res) => {
-    Articulo.find({}).exec((err, data) => {
-        Personal.populate(data, {path: "id_personal"}, (err) => {
+let mostrarComentario = (req, res) => {
+    Comentario.find({}).exec((err, data) => {
+        Articulo.populate(data, {path: "id_articulo"}, (err) => {
             if (err) return res.json({
                 status: 500,
                 mensaje: "Error en la peticion"
@@ -22,7 +22,7 @@ let mostrarArticulo = (req, res) => {
 
         
         //contar la cantidad de registros
-        Articulo.countDocuments({}, (err, total) => {
+        Comentario.countDocuments({}, (err, total) => {
 
             if(err){
                 return res.json({
@@ -47,7 +47,7 @@ let mostrarArticulo = (req, res) => {
 =            PETICIONES POST            =
 =============================================*/
 
-let crearArticulo = (req, res) => {
+let crearComentario = (req, res) => {
 
     //obtenemos el cuerpo del formulario
 
@@ -56,17 +56,16 @@ let crearArticulo = (req, res) => {
     //preguntamos si viene un archivo
 
     if (!req.files) {
-        return res.json({
-            status: 500,
-            mensaje: "La imagen no puede ir vacía"
-        })
+        return
+        // return res.json({
+        //     status: 500,
+        //     mensaje: "La imagen no puede ir vacía"
+        // })
     }
 
     //capturamos el archivo
 
-    let archivo = req.files.img
-    // console.log(req.files.img)
-    // return
+    let archivo = req.files.foto_autor
     
     //validamos la extension del archivo
     if(archivo.mimetype != 'image/jpeg' && archivo.mimetype != 'image/png'){
@@ -93,7 +92,7 @@ let crearArticulo = (req, res) => {
     let extension = archivo.name.split('.').pop()
 
         //movemos el archivo a la carpeta
-    archivo.mv(`./images/articulos/${nombre}.${extension}`, err => {
+    archivo.mv(`./images/comentarios/${nombre}.${extension}`, err => {
         if (err) {
             return res.json({
                 status: 500,
@@ -104,22 +103,22 @@ let crearArticulo = (req, res) => {
 
         //obtenemos los datos del formulario para pasarlo al modelo
         
-        let articulo = new Articulo({
-            titulo: body.titulo,
-            introduccion: body.introduccion,
-            contenido: body.contenido,
+        let comentario = new Comentario({
+            autor: body.autor,
+            foto_autor: `${nombre}.${extension}`,
             fecha: body.fecha,
-            img: `${nombre}.${extension}`,
-            id_personal: body.id_personal
+            hora: body.hora,
+            comentario: body.comentario,
+            id_articulo: body.id_articulo
         })
 
         //guardamos en mongodb
         
-        articulo.save((err, data) => {
+        comentario.save((err, data) => {
             if (err) {
                 return res.json({
                     status: 400,
-                    mensaje: "Error al almacenar el articulo",
+                    mensaje: "Error al almacenar el comentario",
                     err
                 })
             }
@@ -127,7 +126,7 @@ let crearArticulo = (req, res) => {
             res.json({
                 status: 200,
                 data,
-                mensaje: "El articulo ha sido creado con exito"
+                mensaje: "El comentario ha sido creado con exito"
             })
         })
     })
@@ -139,9 +138,9 @@ let crearArticulo = (req, res) => {
 =            PETICIONES PUT            =
 =============================================*/
 
-let editarArticulo = (req, res) => {
+let editarComentario = (req, res) => {
     
-    //capturamos el id del articulo que queremos actualizar
+    //capturamos el id del comentario que queremos actualizar
 
     let id = req.params.id
 
@@ -149,9 +148,9 @@ let editarArticulo = (req, res) => {
 
     let body = req.body
 
-    //VALIDAMOS QUE EL ARTICULO EXISTA
+    //VALIDAMOS QUE EL COMENTARIO EXISTA
 
-    Articulo.findById(id, (err, data) => {
+    Comentario.findById(id, (err, data) => {
         //validamos que no ocurra error en el proceso
         if (err) {
             return res.json({
@@ -160,17 +159,17 @@ let editarArticulo = (req, res) => {
                 err
             })
         }
-        //si el articulo no existe
+        //si el comentario no existe
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El articulo no existe en la base de datos",
+                mensaje: "El comentario no existe en la base de datos",
                 err
             })
             
         }
 
-        let rutaImagen = data.img
+        let rutaImagen = data.imagen
 
 
         //VALIDAMOS QUE HAYA CAMBIO DE IMAGEN
@@ -181,7 +180,7 @@ let editarArticulo = (req, res) => {
                     
                     //capturamos el archivo nuevo
 
-                    let archivo = req.files.img
+                    let archivo = req.files.archivo
                     
                     //validamos la extension del archivo
                     if(archivo.mimetype != 'image/jpeg' && archivo.mimetype != 'image/png'){
@@ -212,7 +211,7 @@ let editarArticulo = (req, res) => {
                     let extension = archivo.name.split('.').pop()
                     
                     //movemos el archivo a la carpeta
-                    archivo.mv(`./images/articulos/${nombre}.${extension}`, err => {
+                    archivo.mv(`./images/comentarios/${nombre}.${extension}`, err => {
                         if (err) {
                             let respuesta = {
                                 res: res,
@@ -222,8 +221,8 @@ let editarArticulo = (req, res) => {
                         }
 
                         //borramos la antigua imagen
-                        if(fs.existsSync(`./images/articulos/${rutaImagen}`)){
-                            fs.unlinkSync(`./images/articulos/${rutaImagen}`)
+                        if(fs.existsSync(`./images/comentarios/${rutaImagen}`)){
+                            fs.unlinkSync(`./images/comentarios/${rutaImagen}`)
                         }
 
                         //damos valor a la nueva imagen

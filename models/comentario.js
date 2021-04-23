@@ -28,7 +28,7 @@ let comentarioSchema = new Schema({
     },
     id_articulo: {
         type: Schema.ObjectId,
-        ref: "articulo"
+        ref: "articulos"
     }
 })
 
