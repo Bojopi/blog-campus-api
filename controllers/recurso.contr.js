@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const Recurso = require('../models/recurso');
 const Categoria = require('../models/categoria');
-// const cloudinary = require('cloudinary').v2
+const cloudinary = require('cloudinary').v2
 // cloudinary.config( process.env.CLOUDINARY_URL )
 
 
@@ -93,19 +93,29 @@ let crearRecurso = (req, res) => {
         //capturar la extension del archivo
     let extension = img.name.split('.').pop()
 
+    //creamos el nombre del archivo
     let nombreArchivo = `${nombre}.${extension}`
 
+    //creamos la ruta del nuevo archivo
     const uploadPath = path.join(__dirname, '/../images/recursos/', nombreArchivo)
 
         //movemos el archivo a la carpeta
-    img.mv(uploadPath, err => {
-        if (err) {
+    // img.mv(uploadPath, err => {
+    //     if (err) {
+    //         return res.json({
+    //             status: 500,
+    //             mensaje: "Error al guardar la imagen",
+    //             err
+    //         })
+    //     }
+    cloudinary.uploader.upload(uploadPath, (err) => {
+        if(err){
             return res.json({
                 status: 500,
-                mensaje: "Error al guardar la imagen",
-                err
+                mensaje: "Error al guardar la imagen"
             })
         }
+    })
 
         //obtenemos los datos del formulario para pasarlo al modelo
         
@@ -135,7 +145,7 @@ let crearRecurso = (req, res) => {
                 mensaje: "El recurso ha sido creado con exito"
             })
         })
-    })
+    // })
 }
 
 

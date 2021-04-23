@@ -1,9 +1,12 @@
-require('./config')
+// require('./config')
+require('dotenv').config()
 
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
+const cloudinary = require('cloudinary').v2
+
 
 const app = express()
 
@@ -31,6 +34,24 @@ app.use(fileUpload())
 //     tempFileDir : '/tmp/'
 // }));
 
+//MIDDLEWARE PARA CLOUDINARY
+cloudinary.config( {
+    cloud_name: 'blogcampusapiutepsa',
+    api_key: '621957746813365',
+    api_secret: 'OB9BUA6HfHp6JOQL9Iuc2rZ8H6o'
+} )
+
+//MIDDLEWARE EN EXPRESS
+app.use((req, res, next) => {
+    //Dominio que tengan acceso
+    res.setHeader('Access-Control-Allow-Origin', '*')
+
+    //Métodos de solicitud que deseas permitir
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+
+    //Encabezados que permites
+    res.setHeader('Access-Control-Allow-Headers', '*')
+})
 
 /*=====        End of MIDDLEWARS       ======*/
 
