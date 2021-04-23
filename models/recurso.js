@@ -14,7 +14,7 @@ let recursoSchema = new Schema({
         type: String,
         required: [true, "La descripción es obligatoria"]
     },
-    logo: {
+    img: {
         type: String,
         required: [true, "El logo es obligatorio"]
     },
@@ -28,7 +28,7 @@ let recursoSchema = new Schema({
     },
     id_categoria: {
         type: Schema.ObjectId,
-        ref: "categoria"
+        ref: "categorias"
     }
 })
 

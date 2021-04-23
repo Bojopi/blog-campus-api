@@ -65,6 +65,7 @@ let crearArticulo = (req, res) => {
     //capturamos el archivo
 
     let archivo = req.files.img
+    console.log(archivo)
     // console.log(req.files.img)
     // return
     

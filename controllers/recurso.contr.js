@@ -1,15 +1,18 @@
 //administrador de carpetas y archivos en nodejs
 const fs = require('fs')
-const Comentario = require('../models/comentario');
-const Articulo = require('../models/articulo');
+const path = require('path')
+const Recurso = require('../models/recurso');
+const Categoria = require('../models/categoria');
+// const cloudinary = require('cloudinary').v2
+// cloudinary.config( process.env.CLOUDINARY_URL )
 
 
 /*=============================================
 =            PETICIONES GET            =
 =============================================*/
-let mostrarComentario = (req, res) => {
-    Comentario.find({}).exec((err, data) => {
-        Articulo.populate(data, {path: "id_articulo"}, (err) => {
+let mostrarRecurso = (req, res) => {
+    Recurso.find({}).exec((err, data) => {
+        Categoria.populate(data, {path: "id_categoria"}, (err) => {
             if (err) return res.json({
                 status: 500,
                 mensaje: "Error en la peticion"
@@ -22,7 +25,7 @@ let mostrarComentario = (req, res) => {
 
         
         //contar la cantidad de registros
-        Comentario.countDocuments({}, (err, total) => {
+        Recurso.countDocuments({}, (err, total) => {
 
             if(err){
                 return res.json({
@@ -47,59 +50,27 @@ let mostrarComentario = (req, res) => {
 =            PETICIONES POST            =
 =============================================*/
 
-let crearComentario = (req, res) => {
+let crearRecurso = (req, res) => {
 
     //obtenemos el cuerpo del formulario
-
+    
     let body = req.body
-
+    
     //preguntamos si viene un archivo
-
+    
     if (!req.files) {
-
-        let imagenDefecto = ""
-
-        //obtenemos los datos del formulario para pasarlo al modelo
-        
-        let comentario = new Comentario({
-            autor: body.autor,
-            foto_autor: `${nombre}.${extension}`,
-            fecha: body.fecha,
-            hora: body.hora,
-            comentario: body.comentario,
-            id_articulo: body.id_articulo
+        return res.json({
+            status: 500,
+            mensaje: "La imagen no puede ir vacía"
         })
-
-        //guardamos en mongodb
-        
-        comentario.save((err, data) => {
-            if (err) {
-                return res.json({
-                    status: 400,
-                    mensaje: "Error al almacenar el comentario",
-                    err
-                })
-            }
-
-            res.json({
-                status: 200,
-                data,
-                mensaje: "El comentario ha sido creado con exito"
-            })
-        })
-
-        // return res.json({
-        //     status: 500,
-        //     mensaje: "La imagen no puede ir vacía"
-        // })
     }
 
     //capturamos el archivo
 
-    let archivo = req.files.foto_autor
+    const { img } = req.files
     
     //validamos la extension del archivo
-    if(archivo.mimetype != 'image/jpeg' && archivo.mimetype != 'image/png'){
+    if(img.mimetype != 'image/jpeg' && img.mimetype != 'image/png'){
         res.json({
             status: 400,
             mensaje: "La imagen debe ser formato JPEG o PNG"
@@ -108,7 +79,7 @@ let crearComentario = (req, res) => {
     
     //validamos el tamaño del archivo
     
-    if(archivo.size > 2000000){
+    if(img.size > 2000000){
         res.json({
             status: 400,
             mensaje: "La imagen debe ser menor a 2MB"
@@ -120,10 +91,14 @@ let crearComentario = (req, res) => {
     let nombre = Math.floor(Math.random()*10000)
 
         //capturar la extension del archivo
-    let extension = archivo.name.split('.').pop()
+    let extension = img.name.split('.').pop()
+
+    let nombreArchivo = `${nombre}.${extension}`
+
+    const uploadPath = path.join(__dirname, '/../images/recursos/', nombreArchivo)
 
         //movemos el archivo a la carpeta
-    archivo.mv(`./images/comentarios/${nombre}.${extension}`, err => {
+    img.mv(uploadPath, err => {
         if (err) {
             return res.json({
                 status: 500,
@@ -134,22 +109,22 @@ let crearComentario = (req, res) => {
 
         //obtenemos los datos del formulario para pasarlo al modelo
         
-        let comentario = new Comentario({
-            autor: body.autor,
-            foto_autor: `${nombre}.${extension}`,
-            fecha: body.fecha,
-            hora: body.hora,
-            comentario: body.comentario,
-            id_articulo: body.id_articulo
+        let recurso = new Recurso({
+            titulo: body.titulo,
+            descripcion: body.descripcion,
+            img: nombreArchivo,
+            video: body.video,
+            enlace: body.enlace,
+            id_categoria: body.id_categoria
         })
 
         //guardamos en mongodb
         
-        comentario.save((err, data) => {
+        recurso.save((err, data) => {
             if (err) {
                 return res.json({
                     status: 400,
-                    mensaje: "Error al almacenar el comentario",
+                    mensaje: "Error al almacenar el recurso",
                     err
                 })
             }
@@ -157,7 +132,7 @@ let crearComentario = (req, res) => {
             res.json({
                 status: 200,
                 data,
-                mensaje: "El comentario ha sido creado con exito"
+                mensaje: "El recurso ha sido creado con exito"
             })
         })
     })
@@ -169,9 +144,9 @@ let crearComentario = (req, res) => {
 =            PETICIONES PUT            =
 =============================================*/
 
-let editarComentario = (req, res) => {
+let editarRecurso = (req, res) => {
     
-    //capturamos el id del comentario que queremos actualizar
+    //capturamos el id del recurso que queremos actualizar
 
     let id = req.params.id
 
@@ -179,9 +154,9 @@ let editarComentario = (req, res) => {
 
     let body = req.body
 
-    //VALIDAMOS QUE EL COMENTARIO EXISTA
+    //VALIDAMOS QUE EL RECURSO EXISTA
 
-    Comentario.findById(id, (err, data) => {
+    Recurso.findById(id, (err, data) => {
         //validamos que no ocurra error en el proceso
         if (err) {
             return res.json({
@@ -190,17 +165,17 @@ let editarComentario = (req, res) => {
                 err
             })
         }
-        //si el comentario no existe
+        //si el articulo no existe
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El comentario no existe en la base de datos",
+                mensaje: "El recurso no existe en la base de datos",
                 err
             })
             
         }
 
-        let rutaImagen = data.foto_autor
+        let rutaImagen = data.img
 
 
         //VALIDAMOS QUE HAYA CAMBIO DE IMAGEN
@@ -211,7 +186,7 @@ let editarComentario = (req, res) => {
                     
                     //capturamos el archivo nuevo
 
-                    let archivo = req.files.foto_autor
+                    let archivo = req.files.img
                     
                     //validamos la extension del archivo
                     if(archivo.mimetype != 'image/jpeg' && archivo.mimetype != 'image/png'){
@@ -242,7 +217,7 @@ let editarComentario = (req, res) => {
                     let extension = archivo.name.split('.').pop()
                     
                     //movemos el archivo a la carpeta
-                    archivo.mv(`./images/comentarios/${nombre}.${extension}`, err => {
+                    archivo.mv(`./images/recursos/${nombre}.${extension}`, err => {
                         if (err) {
                             let respuesta = {
                                 res: res,
@@ -252,8 +227,8 @@ let editarComentario = (req, res) => {
                         }
 
                         //borramos la antigua imagen
-                        if(fs.existsSync(`./images/comentarios/${rutaImagen}`)){
-                            fs.unlinkSync(`./images/comentarios/${rutaImagen}`)
+                        if(fs.existsSync(`./images/recursos/${rutaImagen}`)){
+                            fs.unlinkSync(`./images/recursos/${rutaImagen}`)
                         }
 
                         //damos valor a la nueva imagen
@@ -270,17 +245,18 @@ let editarComentario = (req, res) => {
 
         let cambiarRegistrosBD = (id, body, rutaImagen) => {
             return new Promise((resolve, reject) => {
-                let datosComentario = {
-                    autor: body.autor,
-                    foto_autor: rutaImagen,
-                    fecha: body.fecha,
-                    hora: body.hora,
-                    comentario: body.comentario,
-                    id_articulo: body.id_articulo
+                let datosRecurso = {
+                    titulo: body.titulo,
+                    descripcion: body.descripcion,
+                    img: rutaImagen,
+                    video: body.video,
+                    enlace: body.enlace,
+                    id_categoria: body.id_categoria
                 }
         
                 //Acualizamos en mongodb
-                Comentario.findByIdAndUpdate(id, datosComentario, {new: true, runValidators: true}, (err, data) => {
+                
+                Recurso.findByIdAndUpdate(id, datosRecurso, {new: true, runValidators: true}, (err, data) => {
                     if (err) {
                         let respuesta = {
                             res: res,
@@ -304,13 +280,13 @@ let editarComentario = (req, res) => {
                 respuesta["res"].json({
                     status: 200,
                     data: respuesta["data"],
-                    mensaje: "El comentario ha sido actualizado con éxito"
+                    mensaje: "El recurso ha sido actualizado con éxito"
                 })
             }).catch(respuesta => {
                 respuesta["res"].json({
                     status: 400,
                     err: respuesta["err"],
-                    mensaje: "Error al actualizar el comentario"
+                    mensaje: "Error al actualizar el recurso"
                 })
             })
         }).catch(respuesta => {
@@ -323,20 +299,18 @@ let editarComentario = (req, res) => {
 }
 
 
-
 /*=============================================
 =            PETICION DELETE            =
 =============================================*/
 
-let eliminarComentario = (req, res) => {
-
-    //capturamos el id del comentario que queremos eliminar
+let eliminarRecurso = (req, res) => {
+    //capturamos el id del articulo que queremos eliminar
 
     let id = req.params.id
 
-    //VALIDAMOS QUE EL COMENTARIO EXISTA
+    //VALIDAMOS QUE EL ARTICULO EXISTA
 
-    Comentario.findById(id, (err, data) => {
+    Recurso.findById(id, (err, data) => {
         //validamos que no ocurra error en el proceso
         if (err) {
             return res.json({
@@ -345,34 +319,34 @@ let eliminarComentario = (req, res) => {
                 err
             })
         }
-        //si el comentario no existe
+        //si el articulo no existe
         if (!data) {
             return res.json({
                 status: 400,
-                mensaje: "El comentario no existe en la base de datos",
+                mensaje: "El recurso no existe en la base de datos",
                 err
             })
             
         }
 
          //borramos la antigua imagen
-         if(fs.existsSync(`./images/comentarios/${data.imagen}`)){
-            fs.unlinkSync(`./images/comentarios/${data.imagen}`)
+         if(fs.existsSync(`./images/recursos/${data.imagen}`)){
+            fs.unlinkSync(`./images/recursos/${data.imagen}`)
         }
 
         //borramos el registro en MongoDB
-        Comentario.findByIdAndDelete(id, (err, data) => {
+        Recurso.findByIdAndDelete(id, (err, data) => {
             if(err) {
                 return res.json({
                     status: 500,
-                    mensaje: "Error al borrar el comentario",
+                    mensaje: "Error al borrar el recurso",
                     err
                 })
             }
 
             res.json({
                 status: 200,
-                mensaje: "El comentario ha sido borrado correctamente"
+                mensaje: "El recurso ha sido borrado correctamente"
             })
 
         })
@@ -386,8 +360,8 @@ let eliminarComentario = (req, res) => {
 
 //exportar las funciones del controlador
 module.exports = {
-    mostrarComentario,
-    crearComentario,
-    editarComentario,
-    eliminarComentario
+    mostrarRecurso,
+    crearRecurso,
+    editarRecurso,
+    eliminarRecurso
 } 

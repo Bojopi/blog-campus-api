@@ -7,6 +7,11 @@ const fileUpload = require('express-fileupload');
 
 const app = express()
 
+
+/*=============================================
+=               MIDDLEWARS                    =
+=============================================*/
+
 //MIDDLEWARE PARA BODY PARSER
 
 //parse application/x-www-form-urlencoded
@@ -19,6 +24,18 @@ app.use(bodyParser.json({limit: '10mb', extended: true }))
 //MIDDLEWARE PARA FILE UPLOAD
 //default options express-fileupload
 app.use(fileUpload())
+
+//MIDDLEWARE PARA USETEMPFILE OPTION
+// app.use(fileUpload({
+//     useTempFiles : true,
+//     tempFileDir : '/tmp/'
+// }));
+
+
+/*=====        End of MIDDLEWARS       ======*/
+
+
+
 
 
 
@@ -39,6 +56,8 @@ app.use(require('./routes/categoria.rout'))
 app.use(require('./routes/tipousuario.rout'))
 app.use(require('./routes/usuario.rout'))
 app.use(require('./routes/articulo.rout'))
+app.use(require('./routes/comentario.rout'))
+app.use(require('./routes/recurso.rout'))
 
 //CONEXION A LA BASE DE DATOS
 //mongoose.connect('mongodb://localhost:27017/apirest', {
