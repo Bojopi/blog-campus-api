@@ -6,7 +6,7 @@ const Comentario = require('../controllers/comentario.contr');
 
 //creamos las rutas
 
-app.get('/mostrar-comentario', Comentario.mostrarComentario)
+app.get('/', Comentario.mostrarComentario)
 
 app.post('/crear-comentario', Comentario.crearComentario)
 

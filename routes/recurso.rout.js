@@ -6,7 +6,7 @@ const Recurso = require('../controllers/recurso.contr');
 
 //creamos las rutas
 
-app.get('/mostrar-recurso', Recurso.mostrarRecurso)
+app.get('/', Recurso.mostrarRecurso)
 
 app.post('/crear-recurso', Recurso.crearRecurso)
 

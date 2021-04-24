@@ -6,7 +6,7 @@ const Categoria = require('../controllers/categoria.contr');
 
 //creamos las rutas
 
-app.get('/mostrar-categoria', Categoria.mostrarCategoria)
+app.get('/', Categoria.mostrarCategoria)
 
 app.post('/crear-categoria', Categoria.crearCategoria)
 

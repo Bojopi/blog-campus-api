@@ -6,7 +6,7 @@ const TipoUsuario = require('../controllers/tipousuario.contr');
 
 //creamos las rutas
 
-app.get('/mostrar-tipo', TipoUsuario.mostrarTipoUsuario)
+app.get('/', TipoUsuario.mostrarTipoUsuario)
 
 app.post('/crear-tipo', TipoUsuario.crearTipoUsuario)
 

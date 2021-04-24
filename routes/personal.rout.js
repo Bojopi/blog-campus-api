@@ -6,7 +6,8 @@ const Personal = require('../controllers/personal.contr');
 
 //creamos las rutas
 
-app.get('/mostrar-personal', Personal.mostrarPersonal)
+app.get('/', Personal.mostrarPersonal)
+// app.get('/mostrar-personal', Personal.mostrarPersonal)
 
 app.post('/crear-personal', Personal.crearPersonal)
 

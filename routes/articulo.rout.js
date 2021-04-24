@@ -6,7 +6,7 @@ const Articulo = require('../controllers/articulo.contr');
 
 //creamos las rutas
 
-app.get('/mostrar-articulo', Articulo.mostrarArticulo)
+app.get('/', Articulo.mostrarArticulo)
 
 app.post('/crear-articulo', Articulo.crearArticulo)
 
