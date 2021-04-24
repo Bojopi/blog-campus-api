@@ -7,8 +7,11 @@ const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const cloudinary = require('cloudinary').v2
 
+const Server = require('./models/server');
+
 
 const app = express()
+const server = new Server()
 
 
 /*=============================================
@@ -91,7 +94,6 @@ mongoose.connect('mongodb+srv://admin:12345678Admin@apirestmongoblog.acoc2.mongo
     console.log("Conectado a la BD")
 })
 
-//SALIDA DEL PUERTO HTTP
-app.listen(process.env.PORT, () => {
-    console.log(`Habilitado el puerto: ${process.env.PORT}`)
-})
+
+
+server.listen()
