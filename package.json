@@ -4,7 +4,7 @@
   "description": "mi apirest del blog con mongodb",
   "main": "index.js",
   "scripts": {
-    "start": "node app"
+    "start": "node index"
   },
   "repository": {
     "type": "git",
