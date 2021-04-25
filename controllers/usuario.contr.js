@@ -55,15 +55,15 @@ let mostrarUsuario = (req, res) => {
 =            PETICIONES POST            =
 =============================================*/
 
-let crearUsuario = (req, res) => {
+const crearUsuario = async(req, res) => {
 
     //obtenemos el cuerpo del formulario
 
-    let body = req.body
+    const body = req.body
 
     //obtenemos los datos del formulario para pasarlo al modelo
     
-    let usuario = new Usuario({
+    const usuario = new Usuario({
         usu: body.usu,
         pass: body.pass,
         id_tipo: body.id_tipo,
@@ -72,7 +72,7 @@ let crearUsuario = (req, res) => {
 
     //guardamos en mongodb
     
-    usuario.save((err, data) => {
+    await usuario.save((err, data) => {
         if (err) {
             return res.json({
                 status: 400,

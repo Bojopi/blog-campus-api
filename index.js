@@ -1,10 +1,8 @@
-// require('./config')
 require('dotenv').config()
 
-const express = require('express');
+const Server = require('./models/server');
+
 const mongoose = require('mongoose');
-// const bodyParser = require('body-parser');
-// const fileUpload = require('express-fileupload');
 const cloudinary = require('cloudinary').v2
 //CLOUDINARY
 cloudinary.config({
@@ -13,10 +11,7 @@ cloudinary.config({
     api_secret: 'OB9BUA6HfHp6JOQL9Iuc2rZ8H6o'
 })
 
-const Server = require('./models/server');
 
-
-const app = express()
 const server = new Server()
 
 
@@ -77,17 +72,6 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
-
-
-//IMPORTAR LAS RUTAS
-
-// app.use(require('./routes/personal.rout'))
-// app.use(require('./routes/categoria.rout'))
-// app.use(require('./routes/tipousuario.rout'))
-// app.use(require('./routes/usuario.rout'))
-// app.use(require('./routes/articulo.rout'))
-// app.use(require('./routes/comentario.rout'))
-// app.use(require('./routes/recurso.rout'))
 
 //CONEXION A LA BASE DE DATOS
 //mongoose.connect('mongodb://localhost:27017/apirest', {
