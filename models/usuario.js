@@ -1,22 +1,26 @@
-const mongoose = require('mongoose');
-//const Personal = require('personal');
+const { Schema, model } = require('mongoose');
 
-//esquema para el modelo conector a mongodb
-
-let Schema = mongoose.Schema
-
-let usuarioSchema = new Schema({
-    usu: {
+let usuarioSchema = Schema({
+    user: {
         type: String,
-        required: [true, "El usuario es obligatorio"]
+        required: [true, "El usuario es obligatorio"],
+        unique: true
     },
-    pass: {
+    password: {
         type: String,
         required: [true, "El password es obligatorio"]
     },
-    id_tipo: {
-        type: Schema.ObjectId,
-        ref: "tipo_usuarios"
+    estado: {
+        type: Boolean,
+        default: true
+    },
+    google: {
+        type: Boolean,
+        default: false
+    },
+    rol: {
+        type: String,
+        required: [true, "El rol es obligatorio"]
     },
     id_personal: {
         type: Schema.ObjectId,
@@ -24,5 +28,10 @@ let usuarioSchema = new Schema({
     }
 })
 
+usuarioSchema.methods.toJSON = function () { 
+    const { __v, password, ...usuario } = this.toObject()
+    return usuario
+ }
+
 //exportando el modelo
-module.exports = mongoose.model("usuarios", usuarioSchema)
+module.exports = model("usuarios", usuarioSchema)

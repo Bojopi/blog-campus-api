@@ -1,5 +1,3 @@
-//administrador de carpetas y archivos en nodejs
-const fs = require('fs')
 const Personal = require('../models/personal');
 
 
@@ -40,19 +38,19 @@ let mostrarPersonal = (req, res) => {
 =            PETICIONES POST            =
 =============================================*/
 
-let crearPersonal = (req, res) => {
+let crearPersonal = async(req, res) => {
 
     //obtenemos el cuerpo del formulario
 
-    let body = req.body
+    const {nombre, apellido, correo, telefono} = req.body
 
     //obtenemos los datos del formulario para pasarlo al modelo
     
-    let personal = new Personal({
-        nombre: body.nombre,
-        apellido: body.apellido,
-        correo: body.correo,
-        telefono: body.telefono
+    const personal = new Personal({
+        nombre: nombre,
+        apellido: apellido,
+        correo: correo,
+        telefono: telefono
     })
 
     //guardamos en mongodb

@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema
 
 let tipousuarioSchema = new Schema({
-    nombre: {
+    rol: {
         type: String,
         required: [true, "El nombre es obligatorio"]
     }

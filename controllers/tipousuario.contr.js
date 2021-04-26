@@ -1,5 +1,3 @@
-//administrador de carpetas y archivos en nodejs
-const fs = require('fs')
 const TipoUsuario = require('../models/tipousuario');
 
 
@@ -49,7 +47,7 @@ let crearTipoUsuario = (req, res) => {
     //obtenemos los datos del formulario para pasarlo al modelo
     
     let tipousuario = new TipoUsuario({
-        nombre: body.nombre
+        rol: body.rol
     })
 
     //guardamos en mongodb
@@ -112,7 +110,7 @@ let editarTipoUsuario = (req, res) => {
         let cambiarRegistrosBD = (id, body) => {
             return new Promise((resolve, reject) => {
                 let datosTipoUsuario = {
-                    nombre: body.nombre
+                    rol: body.rol
                 }
         
                 //Acualizamos en mongodb
