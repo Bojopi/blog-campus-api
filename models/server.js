@@ -30,6 +30,18 @@ class Server {
     =            MIDDLEWARES            =
     =============================================*/
     middlewares(){
+        //Express
+        this.app.use((req, res, next) => {
+            //Dominio que tengan acceso
+            res.setHeader('Access-Control-Allow-Origin', '*')
+
+            //Métodos de solicitud que deseas permitir
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+
+            //Encabezados que permites
+            res.setHeader('Access-Control-Allow-Headers', '*')
+        })
+
         //FileUpload
             //default options express-fileupload
         this.app.use(fileUpload())

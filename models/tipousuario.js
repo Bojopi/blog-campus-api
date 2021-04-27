@@ -1,16 +1,12 @@
-const mongoose = require('mongoose');
-//const Personal = require('personal');
+const { Schema, model } = require('mongoose');
 
-//esquema para el modelo conector a mongodb
-
-let Schema = mongoose.Schema
-
-let tipousuarioSchema = new Schema({
+const tipousuarioSchema = Schema({
     rol: {
         type: String,
-        required: [true, "El nombre es obligatorio"]
+        required: [true, "El rol es obligatorio"],
+        emun: ['Administrador', 'Usuario']
     }
 })
 
 //exportando el modelo
-module.exports = mongoose.model("tipo_usuarios", tipousuarioSchema)
+module.exports = model("tipo_usuarios", tipousuarioSchema)

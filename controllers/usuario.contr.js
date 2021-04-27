@@ -55,7 +55,7 @@ let mostrarUsuario = (req, res) => {
 =            PETICIONES POST            =
 =============================================*/
 
-let crearUsuario = (req, res) => {
+const crearUsuario = async(req, res) => {
 
     //obtenemos el cuerpo del formulario
 
@@ -78,7 +78,7 @@ let crearUsuario = (req, res) => {
     
     //guardamos en mongodb
     
-    usuario.save((err, data) => {
+    await usuario.save((err, data) => {
         if (err) {
             return res.json({
                 status: 400,

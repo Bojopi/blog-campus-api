@@ -17,7 +17,10 @@ app.post('/crear-usuario', [
     validarCampos
 ] ,Usuario.crearUsuario)
 
-app.put('/editar-usuario/:id', Usuario.editarUsuario)
+app.put('/editar-usuario/:id', [
+    check('id', 'El ID no es válido').isMongoId(),
+    validarCampos
+] ,Usuario.editarUsuario)
 
 app.delete('/eliminar-usuario/:id', Usuario.eliminarUsuario)
 

@@ -57,41 +57,41 @@ let crearComentario = (req, res) => {
 
     if (!req.files) {
 
-        let imagenDefecto = ""
+        // let imagenDefecto = ""
 
-        //obtenemos los datos del formulario para pasarlo al modelo
+        // //obtenemos los datos del formulario para pasarlo al modelo
         
-        let comentario = new Comentario({
-            autor: body.autor,
-            foto_autor: `${nombre}.${extension}`,
-            fecha: body.fecha,
-            hora: body.hora,
-            comentario: body.comentario,
-            id_articulo: body.id_articulo
-        })
-
-        //guardamos en mongodb
-        
-        comentario.save((err, data) => {
-            if (err) {
-                return res.json({
-                    status: 400,
-                    mensaje: "Error al almacenar el comentario",
-                    err
-                })
-            }
-
-            res.json({
-                status: 200,
-                data,
-                mensaje: "El comentario ha sido creado con exito"
-            })
-        })
-
-        // return res.json({
-        //     status: 500,
-        //     mensaje: "La imagen no puede ir vacía"
+        // let comentario = new Comentario({
+        //     autor: body.autor,
+        //     foto_autor: `${nombre}.${extension}`,
+        //     fecha: body.fecha,
+        //     hora: body.hora,
+        //     comentario: body.comentario,
+        //     id_articulo: body.id_articulo
         // })
+
+        // //guardamos en mongodb
+        
+        // comentario.save((err, data) => {
+        //     if (err) {
+        //         return res.json({
+        //             status: 400,
+        //             mensaje: "Error al almacenar el comentario",
+        //             err
+        //         })
+        //     }
+
+        //     res.json({
+        //         status: 200,
+        //         data,
+        //         mensaje: "El comentario ha sido creado con exito"
+        //     })
+        // })
+
+        return res.json({
+            status: 500,
+            mensaje: "La imagen no puede ir vacía"
+        })
     }
 
     //capturamos el archivo
